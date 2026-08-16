@@ -1,0 +1,30 @@
+name : Primer Pipeline CI
+
+on:
+  push:
+    branches: 
+      - main
+
+jobs:
+  hello-ci:
+    name : Hello CI
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Mostrar Informacion del entorno
+        run: |
+          echo "==============================="
+          echo "Primer Pipeline CI/CD"
+          echo "Repositorio: ${{ github.repository}}"
+          echo "Rama: ${{ github.ref_name}}"
+          echo "Commit: ${{ github.sha}}"
+          echo "==============================="
+      - name: Mostrar fecha y hora
+        run: date
+      - name: Mostar version de git
+        run: git --version
+      - name: Finalizar Pipeline
+        run: echo "Pipeline finalizado correctamente"
