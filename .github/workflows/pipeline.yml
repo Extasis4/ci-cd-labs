@@ -31,5 +31,3 @@ jobs:
         run: git --version
       - name: Finalizar Pipeline
         run: echo "Pipeline finalizado correctamente"
-      - name: Prueba de fallo intencional
-        run: exit 1
