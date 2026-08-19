@@ -1,33 +1,56 @@
-name : Primer Pipeline CI
+name: Laboratorio 3 - Pruebas y Quality Gate
 
 on:
   push:
-    branches: 
+    branches:
       - main
+      - feature/lab3-java-tests
+
   pull_request:
-    branches: 
+    branches:
       - main
 
+  workflow_dispatch:
+
 jobs:
-  hello-ci:
-    name : Hello CI
+  quality-gate:
+    name: Build, Tests y Cobertura
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      
-      - name: Mostrar Informacion del entorno
+      - name: Checkout del repositorio
+        uses: actions/checkout@v7
+
+      - name: Configurar Java 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Mostrar versiones
         run: |
-          echo "==============================="
-          echo "Primer Pipeline CI/CD"
-          echo "Repositorio: ${{ github.repository}}"
-          echo "Rama: ${{ github.ref_name}}"
-          echo "Commit: ${{ github.sha}}"
-          echo "==============================="
-      - name: Mostrar fecha y hora
-        run: date
-      - name: Mostar version de git
-        run: git --version
-      - name: Finalizar Pipeline
-        run: echo "Pipeline finalizado correctamente"
+          java -version
+          mvn -version
+
+      - name: Compilar proyecto
+        run: mvn -B clean compile
+
+      - name: Ejecutar pruebas y Quality Gate
+        run: mvn -B verify
+
+      - name: Publicar reporte de pruebas
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: reporte-pruebas
+          path: target/surefire-reports/
+          if-no-files-found: warn
+
+      - name: Publicar reporte de cobertura
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: reporte-cobertura-jacoco
+          path: target/site/jacoco/
+          if-no-files-found: warn
