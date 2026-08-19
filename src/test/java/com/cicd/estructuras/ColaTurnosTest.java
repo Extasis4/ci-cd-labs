@@ -42,7 +42,7 @@ class ColaTurnosTest {
         cola.agregarTurno("Maria");
         cola.agregarTurno("Pedro");
 
-        assertEquals("Pedro", cola.atenderSiguiente());
+        assertEquals("Juan", cola.atenderSiguiente());
         assertEquals("Maria", cola.atenderSiguiente());
         assertEquals("Pedro", cola.atenderSiguiente());
     }
